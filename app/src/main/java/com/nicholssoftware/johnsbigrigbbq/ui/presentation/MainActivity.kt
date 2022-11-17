@@ -3,16 +3,19 @@ package com.nicholssoftware.johnsbigrigbbq.ui.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,6 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.nicholssoftware.johnsbigrigbbq.R
 import com.nicholssoftware.johnsbigrigbbq.ui.theme.JohnsBigRigBBQTheme
 
 class MainActivity : ComponentActivity() {
@@ -78,10 +82,22 @@ fun DefaultPreview() {
 @Preview(showBackground = true)
 @Composable
 fun TopBar(){
-    TopAppBar(
-        title = {Text(title)},
-        contentColor = Color.White
-    )
+    Column() {
+        TopAppBar(
+            title = {Text(title)},
+            contentColor = Color.White
+        )
+        val image: Painter = painterResource(id = R.drawable.ic_logo)
+        Image(
+            painter = image,
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .align(CenterHorizontally)
+                .padding(20.dp),
+            alignment = Alignment.Center,
+            contentScale = ContentScale.Crop,
+            contentDescription = "Big Jons food truck logo")
+    }
 }
 
 //@Preview(showBackground = true)
