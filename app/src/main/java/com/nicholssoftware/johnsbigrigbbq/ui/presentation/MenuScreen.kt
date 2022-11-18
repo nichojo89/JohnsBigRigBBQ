@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,16 +15,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
 import com.nicholssoftware.johnsbigrigbbq.ui.repository.DishRepository
 import com.nicholssoftware.johnsbigrigbbq.ui.theme.color
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Preview(showBackground = true)
 @Composable
 fun MenuScreen(){
@@ -31,7 +34,7 @@ fun MenuScreen(){
         //TODO Use dependancy injection
         val dishRepo = DishRepository()
         val dishes = dishRepo.getAllDishes()
-
+        val navController = rememberNavController()
         LazyVerticalGrid(
             cells = GridCells.Fixed(2),
             // content padding
@@ -49,6 +52,10 @@ fun MenuScreen(){
                             .padding(4.dp)
                             .fillMaxWidth(),
                         elevation = 8.dp,
+                        onClick = {
+                            val intent =
+                             LocalContext.current.startActivity()
+                        }
                     ) {
                         Column{
                             val painter: Painter = painterResource(id = dishes[index].imageResource)
@@ -62,7 +69,9 @@ fun MenuScreen(){
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center,
 
-                                modifier = Modifier.padding(16.dp).align(CenterHorizontally)
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .align(CenterHorizontally)
                             )
                         }
                     }
