@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,7 +46,7 @@ fun MainScreen(){
     title = NavigationItem.Menu.title
     val navController = rememberNavController()
     Scaffold(
-        topBar = { TopBar()},
+        topBar = { TopBar(navController)},
         bottomBar = { BottomNavigationBar(navController)},
         content = { p ->
                   Box(modifier = Modifier.padding(p)){
@@ -82,13 +84,28 @@ fun DefaultPreview() {
     }
 }
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
-fun TopBar(){
+fun TopBar(navController: NavController){
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     Column() {
         TopAppBar(
             title = {Text(title)},
-            contentColor = Color.White
+            contentColor = Color.White,
+            navigationIcon = if(currentRoute == NavigationItem.DishDetails.route) {
+                {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                }
+            } else {
+                null
+            }
         )
         val image: Painter = painterResource(id = R.drawable.ic_logo)
         Image(
