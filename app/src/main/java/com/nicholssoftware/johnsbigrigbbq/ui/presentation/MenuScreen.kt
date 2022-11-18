@@ -10,6 +10,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -25,12 +26,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.nicholssoftware.johnsbigrigbbq.ui.presentation.NavigationItem.Checkout.title
 import com.nicholssoftware.johnsbigrigbbq.ui.repository.DishRepository
 import com.nicholssoftware.johnsbigrigbbq.ui.theme.color
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun MenuScreen(navController: NavController){
+fun MenuScreen(navController: NavController, mainViewModel: MainViewModel){
+    LaunchedEffect(Unit){
+        mainViewModel.setTitle(NavigationItem.Menu.title)
+    }
+
     Column {
         //TODO Use dependancy injection
         val dishRepo = DishRepository()
@@ -53,8 +59,9 @@ fun MenuScreen(navController: NavController){
                             .fillMaxWidth(),
                         elevation = 8.dp,
                         onClick = {
-
-                            navController.navigate(NavigationItem.DishDetails.route)
+                            val route = NavigationItem.DishDetails.route
+                            title = "test"
+                            navController.navigate(route)
                         }
                     ) {
                         Column{

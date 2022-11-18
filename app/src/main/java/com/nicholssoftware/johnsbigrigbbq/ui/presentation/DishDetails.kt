@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,7 +21,10 @@ import com.nicholssoftware.johnsbigrigbbq.ui.presentation.ui.theme.JohnsBigRigBB
 import com.nicholssoftware.johnsbigrigbbq.ui.theme.Red
 
 @Composable
-fun DishDetailsScreen(){
+fun DishDetailsScreen(mainViewModel: MainViewModel){
+    LaunchedEffect(Unit){
+        mainViewModel.setTitle(NavigationItem.DishDetails.title)
+    }
     JohnsBigRigBBQTheme {
         Column(Modifier.fillMaxSize()){
             DishHeader()
@@ -90,10 +94,10 @@ fun DishDescriptionPreview(){
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview2() {
-    JohnsBigRigBBQTheme {
-        DishDetailsScreen()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview2() {
+//    JohnsBigRigBBQTheme {
+//        DishDetailsScreen()
+//    }
+//}

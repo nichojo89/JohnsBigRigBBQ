@@ -8,10 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -42,15 +40,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(){
-    title = NavigationItem.Menu.title
+fun MainScreen(mainViewModel: MainViewModel = MainViewModel()){
     val navController = rememberNavController()
     Scaffold(
-        topBar = { TopBar(navController)},
-        bottomBar = { BottomNavigationBar(navController)},
+        topBar = { TopBar(navController,mainViewModel)},
+        bottomBar = { BottomNavigationBar(navController,mainViewModel)},
         content = { p ->
                   Box(modifier = Modifier.padding(p)){
-                      Navigation(navController = navController)
+                      Navigation(navController = navController,mainViewModel)
                   }
         },
         backgroundColor = MaterialTheme.colors.background
@@ -58,10 +55,11 @@ fun MainScreen(){
 }
 
 @Composable
-fun Navigation(navController: NavHostController){
+fun Navigation(navController: NavHostController,
+               mainViewModel: MainViewModel){
     NavHost(navController, startDestination = NavigationItem.Menu.route) {
         composable(NavigationItem.Menu.route) {
-            MenuScreen(navController)
+            MenuScreen(navController,mainViewModel)
         }
         composable(NavigationItem.Checkout.route){
             CheckoutScreen()
@@ -70,7 +68,7 @@ fun Navigation(navController: NavHostController){
             TruckScreen()
         }
         composable(NavigationItem.DishDetails.route){
-            DishDetailsScreen()
+            DishDetailsScreen(mainViewModel)
         }
     }
 }
@@ -86,13 +84,16 @@ fun DefaultPreview() {
 
 //@Preview(showBackground = true)
 @Composable
-fun TopBar(navController: NavController){
+fun TopBar(navController: NavController,
+           mainViewModel: MainViewModel){
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    Column() {
+    val title: String by mainViewModel.topBarTitle.observeAsState("")
+
+    Column {
         TopAppBar(
-            title = {Text(title)},
+            title = {title?.let {Text(it)}},
             contentColor = Color.White,
             navigationIcon = if(currentRoute == NavigationItem.DishDetails.route) {
                 {
@@ -122,7 +123,9 @@ fun TopBar(navController: NavController){
 
 //@Preview(showBackground = true)
 @Composable
-fun BottomNavigationBar(navController: NavController){
+fun BottomNavigationBar(navController: NavController,
+mainViewModel: MainViewModel){
+
     val items = listOf(
         NavigationItem.Menu,
         NavigationItem.Checkout,
@@ -145,7 +148,7 @@ fun BottomNavigationBar(navController: NavController){
                 alwaysShowLabel = true,
                 selected = currentRoute == item.route,
                 onClick = {
-                    title = item.title
+                    mainViewModel.setTitle(item.title)
                     navController.navigate(item.route){
                         navController.graph.startDestinationRoute?.let { route ->
                             popUpTo(route){
@@ -160,6 +163,4 @@ fun BottomNavigationBar(navController: NavController){
         }
     }
 }
-
-private var title by mutableStateOf("")
 
