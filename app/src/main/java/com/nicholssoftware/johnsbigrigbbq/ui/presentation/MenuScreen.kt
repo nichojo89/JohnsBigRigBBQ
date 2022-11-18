@@ -1,5 +1,6 @@
 package com.nicholssoftware.johnsbigrigbbq.ui.presentation
 
+import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -22,19 +23,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.nicholssoftware.johnsbigrigbbq.ui.repository.DishRepository
 import com.nicholssoftware.johnsbigrigbbq.ui.theme.color
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
-@Preview(showBackground = true)
 @Composable
-fun MenuScreen(){
+fun MenuScreen(navController: NavController){
     Column {
         //TODO Use dependancy injection
         val dishRepo = DishRepository()
         val dishes = dishRepo.getAllDishes()
-        val navController = rememberNavController()
         LazyVerticalGrid(
             cells = GridCells.Fixed(2),
             // content padding
@@ -53,8 +53,8 @@ fun MenuScreen(){
                             .fillMaxWidth(),
                         elevation = 8.dp,
                         onClick = {
-                            val intent =
-                             LocalContext.current.startActivity()
+
+                            navController.navigate(NavigationItem.DishDetails.route)
                         }
                     ) {
                         Column{

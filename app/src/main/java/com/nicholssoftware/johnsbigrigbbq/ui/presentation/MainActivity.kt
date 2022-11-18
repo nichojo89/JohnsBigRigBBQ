@@ -59,7 +59,7 @@ fun MainScreen(){
 fun Navigation(navController: NavHostController){
     NavHost(navController, startDestination = NavigationItem.Menu.route) {
         composable(NavigationItem.Menu.route) {
-            MenuScreen()
+            MenuScreen(navController)
         }
         composable(NavigationItem.Checkout.route){
             CheckoutScreen()

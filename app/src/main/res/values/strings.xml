@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">JohnsBigRigBBQ</string>
+    <string name="title_activity_dish_details">DishDetailsActivity</string>
 </resources>
