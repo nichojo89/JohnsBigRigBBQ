@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -80,6 +81,7 @@ fun MenuScreen(navController: NavController, mainViewModel: MainViewModel){
                                     .padding(16.dp)
                                     .align(CenterHorizontally)
                             )
+                            //TextField(value = , onValueChange = 1)
                         }
                     }
                 }
