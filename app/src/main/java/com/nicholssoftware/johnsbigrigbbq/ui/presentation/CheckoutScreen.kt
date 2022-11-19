@@ -11,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -21,6 +20,8 @@ import androidx.compose.ui.unit.dp
 import com.nicholssoftware.core.data.Dish
 import com.nicholssoftware.johnsbigrigbbq.ui.repository.DishRepository
 import com.nicholssoftware.johnsbigrigbbq.ui.theme.JohnsBigRigBBQTheme
+import java.text.NumberFormat
+import java.util.*
 
 @Preview(showBackground = true)
 @Composable
@@ -88,7 +89,10 @@ fun OrderCard(dish: Dish){
                 modifier = Modifier.width(40.dp),
                 keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number)
             )
-            Text(dish.price.toString(), modifier = Modifier.padding(20.dp, 0.dp,20.dp, 0.dp))
+
+            val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "US"))
+            val price = currencyFormat.format(dish.price)
+            Text(price, modifier = Modifier.padding(20.dp, 0.dp,20.dp, 0.dp))
         }
     }
 }
