@@ -62,7 +62,7 @@ fun Navigation(navController: NavHostController,
             MenuScreen(navController,mainViewModel)
         }
         composable(NavigationItem.Checkout.route){
-            CheckoutScreen()
+            CheckoutScreen(navController)
         }
         composable(NavigationItem.Truck.route){
             TruckScreen()

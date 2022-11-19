@@ -31,6 +31,7 @@ fun DishDetailsScreen(navController: NavController, mainViewModel: MainViewModel
             DishHeader()
             DishDescription()
             Button(onClick = {
+                //mainViewModel.setTitle(NavigationItem.Checkout.title)
                 navController.navigate(NavigationItem.Checkout.route){
                     navController.graph.startDestinationRoute?.let { route ->
                         popUpTo(route){

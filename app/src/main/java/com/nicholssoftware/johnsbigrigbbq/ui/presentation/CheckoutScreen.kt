@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.nicholssoftware.core.data.Dish
 import com.nicholssoftware.johnsbigrigbbq.ui.repository.DishRepository
 import com.nicholssoftware.johnsbigrigbbq.ui.theme.JohnsBigRigBBQTheme
@@ -26,18 +27,17 @@ import com.nicholssoftware.johnsbigrigbbq.ui.theme.Red
 import java.text.NumberFormat
 import java.util.*
 
-@Preview(showBackground = true)
 @Composable
-fun CheckoutScreen(){
+fun CheckoutScreen(navController: NavController){
     JohnsBigRigBBQTheme {
         Surface {
-            OrderItems()
+            OrderItems(navController)
         }
     }
 }
 
 @Composable
-fun OrderItems(){
+fun OrderItems(navController: NavController){
     //TODO This should be injected using dependancy injection
     Column(modifier = Modifier.fillMaxSize()){
         val list = DishRepository().getAllDishes().take(3)
@@ -50,7 +50,7 @@ fun OrderItems(){
 
             }
             item {
-                OrderDetails(list)
+                OrderDetails(list,navController)
             }
         }
 
@@ -111,7 +111,7 @@ fun OrderCard(dish: Dish){
 }
 
 @Composable
-fun OrderDetails(list: List<Dish>){
+fun OrderDetails(list: List<Dish>, navController: NavController){
     val tax = list.sumOf{it.price} * 0.06
     Row(horizontalArrangement = Arrangement.SpaceBetween,
     modifier = Modifier
@@ -159,7 +159,7 @@ fun OrderDetails(list: List<Dish>){
         Text(text = sm)
     }
     Button(onClick = {
-        /*TODO navigate to checkout*/
+        navController.navigate(NavigationItem.Truck.route)
     },
 
         modifier = Modifier

@@ -61,7 +61,7 @@ fun MenuScreen(navController: NavController, mainViewModel: MainViewModel){
                         elevation = 8.dp,
                         onClick = {
                             val route = NavigationItem.DishDetails.route
-                            title = "test"
+                            title = NavigationItem.DishDetails.title
                             navController.navigate(route)
                         }
                     ) {
