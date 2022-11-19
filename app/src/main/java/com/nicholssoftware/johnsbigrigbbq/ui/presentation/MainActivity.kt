@@ -68,7 +68,7 @@ fun Navigation(navController: NavHostController,
             TruckScreen()
         }
         composable(NavigationItem.DishDetails.route){
-            DishDetailsScreen(mainViewModel)
+            DishDetailsScreen(navController, mainViewModel)
         }
     }
 }

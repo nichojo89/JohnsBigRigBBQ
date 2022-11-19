@@ -16,12 +16,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.nicholssoftware.johnsbigrigbbq.R
 import com.nicholssoftware.johnsbigrigbbq.ui.presentation.ui.theme.JohnsBigRigBBQTheme
 import com.nicholssoftware.johnsbigrigbbq.ui.theme.Red
 
 @Composable
-fun DishDetailsScreen(mainViewModel: MainViewModel){
+fun DishDetailsScreen(navController: NavController, mainViewModel: MainViewModel){
     LaunchedEffect(Unit){
         mainViewModel.setTitle(NavigationItem.DishDetails.title)
     }
@@ -30,7 +31,15 @@ fun DishDetailsScreen(mainViewModel: MainViewModel){
             DishHeader()
             DishDescription()
             Button(onClick = {
-            /*TODO navigate to checkout*/
+                navController.navigate(NavigationItem.Checkout.route){
+                    navController.graph.startDestinationRoute?.let { route ->
+                        popUpTo(route){
+                            saveState = true
+                        }
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
             },
 
             modifier = Modifier

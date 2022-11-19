@@ -169,7 +169,7 @@ fun OrderDetails(list: List<Dish>){
         )
         , shape = RoundedCornerShape(23.dp)
     ) {
-        Text(text = "Add to cart")
+        Text(text = "Locate Truck")
     }
 
 }
