@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.nicholssoftware.core.data.Dish
 import com.nicholssoftware.johnsbigrigbbq.ui.repository.DishRepository
 import com.nicholssoftware.johnsbigrigbbq.ui.theme.JohnsBigRigBBQTheme
+import com.nicholssoftware.johnsbigrigbbq.ui.theme.Red
 import java.text.NumberFormat
 import java.util.*
 
@@ -39,7 +41,8 @@ fun OrderItems(){
     //TODO This should be injected using dependancy injection
     Column(modifier = Modifier.fillMaxSize()){
         val list = DishRepository().getAllDishes().take(3)
-        LazyColumn(modifier = Modifier.fillMaxHeight(),
+        LazyColumn(modifier = Modifier.fillMaxHeight()
+            .align(Alignment.CenterHorizontally),
             contentPadding = PaddingValues(16.dp)
         ){
             items(list) { item ->
@@ -111,7 +114,8 @@ fun OrderCard(dish: Dish){
 fun OrderDetails(list: List<Dish>){
     val tax = list.sumOf{it.price} * 0.06
     Row(horizontalArrangement = Arrangement.SpaceBetween,
-    modifier = Modifier.fillMaxWidth()
+    modifier = Modifier
+        .fillMaxWidth()
         .padding(20.dp)){
         Text(text = "Tax", fontWeight = FontWeight.Bold)
 
@@ -120,14 +124,17 @@ fun OrderDetails(list: List<Dish>){
         Text(text = t)
     }
 
+    var tip by remember { mutableStateOf(TextFieldValue("")) }
+    tip = TextFieldValue("1")
+
     Row(horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(20.dp)){
         Text(text = "Add tip", fontWeight = FontWeight.Bold)
 
-        var tip by remember { mutableStateOf(TextFieldValue("")) }
-        tip = TextFieldValue("1")
-        
+
+
         TextField(
             value = tip,
             onValueChange = { newText ->
@@ -136,5 +143,33 @@ fun OrderDetails(list: List<Dish>){
             modifier = Modifier.width(40.dp),
             keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number)
         )
+
+
     }
+    Divider(color = Color.Gray, thickness = 2.dp)
+    Row(horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp)){
+        Text(text = "Total", fontWeight = FontWeight.Bold)
+
+        val s = tax+tip.text.toInt()+list.sumOf{it.price}
+        val cf = NumberFormat.getCurrencyInstance(Locale("en","US"))
+        val sm = cf.format(s)
+        Text(text = sm)
+    }
+    Button(onClick = {
+        /*TODO navigate to checkout*/
+    },
+
+        modifier = Modifier
+            .padding(15.dp)
+        , colors = ButtonDefaults.buttonColors(
+            Red, Color.White
+        )
+        , shape = RoundedCornerShape(23.dp)
+    ) {
+        Text(text = "Add to cart")
+    }
+
 }
