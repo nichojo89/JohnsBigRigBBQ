@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,18 +34,23 @@ fun CheckoutScreen(){
     }
 }
 
-@Preview(showBackground = true)
 @Composable
 fun OrderItems(){
     //TODO This should be injected using dependancy injection
-    val list = DishRepository().getAllDishes().take(3)
+    Column(modifier = Modifier.fillMaxSize()){
+        val list = DishRepository().getAllDishes().take(3)
+        LazyColumn(modifier = Modifier.fillMaxHeight(),
+            contentPadding = PaddingValues(16.dp)
+        ){
+            items(list) { item ->
+                OrderCard(dish = item)
 
-    LazyColumn(modifier = Modifier.fillMaxHeight(),
-    contentPadding = PaddingValues(16.dp)
-    ){
-        items(list) { item ->
-            OrderCard(dish = item)
+            }
+            item {
+                OrderDetails(list)
+            }
         }
+
     }
 }
 
@@ -62,7 +68,9 @@ fun OrderCard(dish: Dish){
     ){
         Row(verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement  =  Arrangement.Start,
-        modifier = Modifier.fillMaxWidth().fillMaxHeight()){
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()){
             Image(
                 painter = painterResource(id = dish.imageResource),
                 contentDescription = dish.contentDescription,
@@ -77,7 +85,9 @@ fun OrderCard(dish: Dish){
         }
         Row(verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement  =  Arrangement.End,
-            modifier = Modifier.fillMaxWidth().padding(20.dp, 5.dp,20.dp, 5.dp))
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp, 5.dp, 20.dp, 5.dp))
         {
             var itemCount by remember { mutableStateOf(TextFieldValue("")) }
             itemCount = TextFieldValue("1")
@@ -97,3 +107,34 @@ fun OrderCard(dish: Dish){
     }
 }
 
+@Composable
+fun OrderDetails(list: List<Dish>){
+    val tax = list.sumOf{it.price} * 0.06
+    Row(horizontalArrangement = Arrangement.SpaceBetween,
+    modifier = Modifier.fillMaxWidth()
+        .padding(20.dp)){
+        Text(text = "Tax", fontWeight = FontWeight.Bold)
+
+        val cf = NumberFormat.getCurrencyInstance(Locale("en","US"))
+        val t = cf.format(tax)
+        Text(text = t)
+    }
+
+    Row(horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+            .padding(20.dp)){
+        Text(text = "Add tip", fontWeight = FontWeight.Bold)
+
+        var tip by remember { mutableStateOf(TextFieldValue("")) }
+        tip = TextFieldValue("1")
+        
+        TextField(
+            value = tip,
+            onValueChange = { newText ->
+                tip = newText
+            },
+            modifier = Modifier.width(40.dp),
+            keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number)
+        )
+    }
+}
