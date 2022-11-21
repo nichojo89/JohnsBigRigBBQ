@@ -44,7 +44,7 @@
 
         </activity>
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCNqrODQZSXS3Vf-5tmV86MY1aIqMMNtlo"/>
+            android:value="REMOVED-GOOGLE-API-KEY-FROM-SOURCE-CODE"/>
     </application>
 
 </manifest>
