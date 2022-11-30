@@ -60,9 +60,8 @@ fun MenuScreen(navController: NavController, mainViewModel: MainViewModel){
                             .fillMaxWidth(),
                         elevation = 8.dp,
                         onClick = {
-                            val route = NavigationItem.DishDetails.route
                             title = NavigationItem.DishDetails.title
-                            navController.navigate(route)
+                            navController.navigate("dish_details/${dishes[index].id}")
                         }
                     ) {
                         Column{

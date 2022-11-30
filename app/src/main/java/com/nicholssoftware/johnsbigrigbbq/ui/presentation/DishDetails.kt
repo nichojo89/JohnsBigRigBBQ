@@ -6,6 +6,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,21 +23,34 @@ import com.nicholssoftware.johnsbigrigbbq.R
 import com.nicholssoftware.johnsbigrigbbq.ui.framework.ServiceLocator
 import com.nicholssoftware.johnsbigrigbbq.ui.presentation.ui.theme.JohnsBigRigBBQTheme
 import com.nicholssoftware.johnsbigrigbbq.ui.theme.Red
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nicholssoftware.core.data.Dish
+
 
 @Composable
-fun DishDetailsScreen(navController: NavController, mainViewModel: MainViewModel, onNavigateToCheckout: () -> Unit){
+fun DishDetailsScreen(navController: NavController, mainViewModel: MainViewModel,viewModel: DishDetailsViewModel = viewModel()){
+    val dish by viewModel.dish.collectAsState()
     LaunchedEffect(Unit){
         mainViewModel.setTitle(NavigationItem.DishDetails.title)
     }
+
     JohnsBigRigBBQTheme {
         Column(Modifier.fillMaxSize()){
-            DishHeader()
+            DishHeader(dish)
             DishDescription()
             Button(onClick = {
                 //TODO Add to cart
 //                ServiceLocator.cart[1] = 9
                 //mainViewModel.setTitle(NavigationItem.Checkout.title)
-                onNavigateToCheckout()
+                navController.navigate(NavigationItem.Checkout.route){
+                    navController.graph.startDestinationRoute?.let { route ->
+                        popUpTo(route){
+                            saveState = true
+                        }
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
             },
 
             modifier = Modifier
@@ -53,10 +68,11 @@ fun DishDetailsScreen(navController: NavController, mainViewModel: MainViewModel
 }
 
 @Composable
-fun DishHeader(){
-    Column(modifier = Modifier.padding(20.dp)
+fun DishHeader(dish: Dish){
+    Column(modifier = Modifier
+        .padding(20.dp)
         .wrapContentHeight()){
-        Text(text = "Signature Brisket",
+        Text(text = dish.title,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp)
 
@@ -76,7 +92,7 @@ fun DishDescription(){
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(80.dp,10.dp,80.dp,10.dp)
+                .padding(80.dp, 10.dp, 80.dp, 10.dp)
         )
         Text(modifier = Modifier.padding(50.dp,0.dp,50.dp,0.dp),
             text = "The pit boss. Made with Angus beef. Made " +
@@ -93,7 +109,7 @@ fun DishDescription(){
 fun DishDescriptionPreview(){
     JohnsBigRigBBQTheme {
         Column{
-            DishHeader()
+//            DishHeader(Dish())
             DishDescription()
         }
     }

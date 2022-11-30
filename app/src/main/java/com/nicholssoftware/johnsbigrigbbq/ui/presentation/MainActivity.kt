@@ -21,10 +21,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.nicholssoftware.johnsbigrigbbq.R
 import com.nicholssoftware.johnsbigrigbbq.ui.theme.JohnsBigRigBBQTheme
 
@@ -52,35 +54,6 @@ fun MainScreen(mainViewModel: MainViewModel = MainViewModel()){
         },
         backgroundColor = MaterialTheme.colors.background
     )
-}
-
-@Composable
-fun Navigation(navController: NavHostController,
-               mainViewModel: MainViewModel){
-    NavHost(navController, startDestination = NavigationItem.Menu.route) {
-        composable(NavigationItem.Menu.route) {
-            MenuScreen(navController,mainViewModel)
-        }
-        composable(NavigationItem.Checkout.route){
-            CheckoutScreen(navController)
-        }
-        composable(NavigationItem.Truck.route){
-            TruckScreen()
-        }
-        composable(NavigationItem.DishDetails.route){
-            DishDetailsScreen(navController, mainViewModel){
-                navController.navigate(NavigationItem.Checkout.route){
-                    navController.graph.startDestinationRoute?.let { route ->
-                        popUpTo(route){
-                            saveState = true
-                        }
-                    }
-                    launchSingleTop = true
-                    restoreState = true
-                }
-            }
-        }
-    }
 }
 
 

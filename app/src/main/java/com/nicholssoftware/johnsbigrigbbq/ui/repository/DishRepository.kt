@@ -2,8 +2,12 @@ package com.nicholssoftware.johnsbigrigbbq.ui.repository
 
 import com.nicholssoftware.core.data.Dish
 import com.nicholssoftware.johnsbigrigbbq.R
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class DishRepository {
+    fun getDishById(id: Long): Dish = getAllDishes().first { it.id == id }
+
     fun getAllDishes(): Array<Dish>{
         return arrayOf(
             Dish(
