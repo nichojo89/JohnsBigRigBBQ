@@ -18,11 +18,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.nicholssoftware.johnsbigrigbbq.R
+import com.nicholssoftware.johnsbigrigbbq.ui.framework.ServiceLocator
 import com.nicholssoftware.johnsbigrigbbq.ui.presentation.ui.theme.JohnsBigRigBBQTheme
 import com.nicholssoftware.johnsbigrigbbq.ui.theme.Red
 
 @Composable
-fun DishDetailsScreen(navController: NavController, mainViewModel: MainViewModel){
+fun DishDetailsScreen(navController: NavController, mainViewModel: MainViewModel, onNavigateToCheckout: () -> Unit){
     LaunchedEffect(Unit){
         mainViewModel.setTitle(NavigationItem.DishDetails.title)
     }
@@ -31,16 +32,10 @@ fun DishDetailsScreen(navController: NavController, mainViewModel: MainViewModel
             DishHeader()
             DishDescription()
             Button(onClick = {
+                //TODO Add to cart
+//                ServiceLocator.cart[1] = 9
                 //mainViewModel.setTitle(NavigationItem.Checkout.title)
-                navController.navigate(NavigationItem.Checkout.route){
-                    navController.graph.startDestinationRoute?.let { route ->
-                        popUpTo(route){
-                            saveState = true
-                        }
-                    }
-                    launchSingleTop = true
-                    restoreState = true
-                }
+                onNavigateToCheckout()
             },
 
             modifier = Modifier

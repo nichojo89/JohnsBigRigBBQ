@@ -68,7 +68,17 @@ fun Navigation(navController: NavHostController,
             TruckScreen()
         }
         composable(NavigationItem.DishDetails.route){
-            DishDetailsScreen(navController, mainViewModel)
+            DishDetailsScreen(navController, mainViewModel){
+                navController.navigate(NavigationItem.Checkout.route){
+                    navController.graph.startDestinationRoute?.let { route ->
+                        popUpTo(route){
+                            saveState = true
+                        }
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
         }
     }
 }
