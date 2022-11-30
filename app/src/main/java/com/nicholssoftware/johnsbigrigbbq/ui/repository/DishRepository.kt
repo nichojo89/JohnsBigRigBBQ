@@ -12,6 +12,7 @@ class DishRepository {
         return arrayOf(
             Dish(
                 "Smoked Ribs",
+                "pork",
                 "Yummy ribs desc",
                 "Yummy ribs desc",
                 R.drawable.ic_ribs,
@@ -19,6 +20,7 @@ class DishRepository {
             1),
             Dish(
                 "Mac & Bacon",
+                "pasta",
                 "Sharp cheddar cheese, homemade macaroni, & apple wood bacon",
                 "Sharp cheddar cheese, homemade macaroni, & apple wood bacon",
                 R.drawable.ic_mac_bacon,
@@ -26,6 +28,7 @@ class DishRepository {
                 2),
             Dish(
                 "Brisket",
+                "beef",
                 "Slow cooked tender brisket",
                 "Slow cooked tender brisket",
                 R.drawable.ic_brisket,
@@ -33,6 +36,7 @@ class DishRepository {
                 3),
             Dish(
                 "Smoked Chicken",
+                "poultry",
                 "Fresh juicy smoked chicken with Big Jons BBQ sauce",
                 "Fresh juicy smoked chicken with Big Jons BBQ sauce",
                 R.drawable.ic_smoked_chicken,
@@ -40,6 +44,7 @@ class DishRepository {
                 4),
             Dish(
                 "Pulled Pork",
+                "pork",
                 "Pulled pork in a koren style medley of vegetables",
                 "Pulled pork in a koren style medley of vegetables",
                 R.drawable.ic_pulled_pork,
@@ -47,11 +52,12 @@ class DishRepository {
                 5),
             Dish(
                 "Steak Bites",
+                "beef",
                 "Tender steak bites served with a side of asparagus",
                 "Tender steak bites served with a side of asparagus",
                 R.drawable.ic_steak_bites,
                 12.00,
-                6),
+                6)
         )
     }
 }

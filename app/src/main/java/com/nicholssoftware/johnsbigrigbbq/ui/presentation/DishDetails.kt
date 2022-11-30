@@ -37,11 +37,11 @@ fun DishDetailsScreen(navController: NavController, mainViewModel: MainViewModel
     JohnsBigRigBBQTheme {
         Column(Modifier.fillMaxSize()){
             DishHeader(dish)
-            DishDescription()
+            DishDescription(dish)
             Button(onClick = {
-                //TODO Add to cart
-//                ServiceLocator.cart[1] = 9
-                //mainViewModel.setTitle(NavigationItem.Checkout.title)
+                //Add to cart
+                ServiceLocator.cart.add(dish)
+                //TODO mainViewModel.setTitle(NavigationItem.Checkout.title)
                 navController.navigate(NavigationItem.Checkout.route){
                     navController.graph.startDestinationRoute?.let { route ->
                         popUpTo(route){
@@ -76,30 +76,26 @@ fun DishHeader(dish: Dish){
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp)
 
-        Text("Pork",
+        Text(dish.type,
             fontSize = 14.sp)
         Divider(color = Color.Gray,thickness = 2.dp)
     }
 }
 
 @Composable
-fun DishDescription(){
-    val painter: Painter = painterResource(R.drawable.ic_brisket)
+fun DishDescription(dish: Dish){
+    val painter: Painter = painterResource(dish.imageResource)
     Column{
         Image(
             painter = painter,
-            contentDescription = "Yummy Brisket",
+            contentDescription = dish.description,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(80.dp, 10.dp, 80.dp, 10.dp)
         )
         Text(modifier = Modifier.padding(50.dp,0.dp,50.dp,0.dp),
-            text = "The pit boss. Made with Angus beef. Made " +
-                    "with whole premium cuts. Brisket beef patties " +
-                    "with bacon and barbecue rub. Try the Brisket " +
-                    "Beef Patty with red curly leaf lettuce, sliced " +
-                    "tomatoes, smoked cheddar cheese, tomato jam and bacon."
+            text = dish.description
         )
     }
 }
@@ -110,7 +106,7 @@ fun DishDescriptionPreview(){
     JohnsBigRigBBQTheme {
         Column{
 //            DishHeader(Dish())
-            DishDescription()
+//            DishDescription()
         }
     }
 }
