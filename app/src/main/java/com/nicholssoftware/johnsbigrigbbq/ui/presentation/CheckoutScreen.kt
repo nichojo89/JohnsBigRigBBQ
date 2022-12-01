@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nicholssoftware.core.data.Dish
 import com.nicholssoftware.johnsbigrigbbq.ui.framework.ServiceLocator
-import com.nicholssoftware.johnsbigrigbbq.ui.repository.DishRepository
 import com.nicholssoftware.johnsbigrigbbq.ui.theme.JohnsBigRigBBQTheme
 import com.nicholssoftware.johnsbigrigbbq.ui.theme.Red
 import java.text.NumberFormat
@@ -29,7 +28,6 @@ import java.util.*
 
 @Composable
 fun CheckoutScreen(navController: NavController){
-    val test = ServiceLocator.cart
     JohnsBigRigBBQTheme {
         Surface {
             OrderItems(navController) {navController.navigate(NavigationItem.Truck.route)}
@@ -39,19 +37,18 @@ fun CheckoutScreen(navController: NavController){
 
 @Composable
 fun OrderItems(navController: NavController, onNavigateToTruck: () -> Unit){
-    //TODO This should be injected using dependancy injection
     Column(modifier = Modifier.fillMaxSize()){
-        val list = DishRepository().getAllDishes().take(3)
+        val list = ServiceLocator.cart.toList()
         LazyColumn(modifier = Modifier.fillMaxHeight()
             .align(Alignment.CenterHorizontally),
             contentPadding = PaddingValues(16.dp)
         ){
             items(list) { item ->
-                OrderCard(dish = item)
+                OrderCard(order = item)
 
             }
             item {
-                OrderDetails(list,navController) {onNavigateToTruck()}
+                OrderDetails(order = list) {onNavigateToTruck()}
             }
         }
 
@@ -59,7 +56,8 @@ fun OrderItems(navController: NavController, onNavigateToTruck: () -> Unit){
 }
 
 @Composable
-fun OrderCard(dish: Dish){
+fun OrderCard(order : Pair<Dish, Int>){
+    val dish = order.first
     Card(
         modifier = Modifier
             .padding(10.dp)
@@ -93,14 +91,17 @@ fun OrderCard(dish: Dish){
                 .fillMaxWidth()
                 .padding(20.dp, 5.dp, 20.dp, 5.dp))
         {
-            var itemCount by remember { mutableStateOf(TextFieldValue("")) }
-            itemCount = TextFieldValue("1")
+            val qty = order.second
+            var itemCount by remember { mutableStateOf(TextFieldValue("$qty")) }
+
             TextField(
+
                 value = itemCount,
-                onValueChange = { newText ->
-                    itemCount = newText
+                modifier = Modifier.width(60.dp),
+                onValueChange = {
+                        newText -> itemCount = newText
+                    //TODO recalculate price
                 },
-                modifier = Modifier.width(40.dp),
                 keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number)
             )
 
@@ -112,8 +113,9 @@ fun OrderCard(dish: Dish){
 }
 
 @Composable
-fun OrderDetails(list: List<Dish>, navController: NavController, onNavigateToTruck: () -> Unit){
-    val tax = list.sumOf{it.price} * 0.06
+fun OrderDetails(order: List<Pair<Dish, Int>>, onNavigateToTruck: () -> Unit){
+    val total = order.sumOf { it.first.price * it.second }
+    val tax = total * 0.06
     Row(horizontalArrangement = Arrangement.SpaceBetween,
     modifier = Modifier
         .fillMaxWidth()
@@ -125,8 +127,7 @@ fun OrderDetails(list: List<Dish>, navController: NavController, onNavigateToTru
         Text(text = t)
     }
 
-    var tip by remember { mutableStateOf(TextFieldValue("")) }
-    tip = TextFieldValue("1")
+    var tip by remember { mutableStateOf(TextFieldValue("0")) }
 
     Row(horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -140,6 +141,7 @@ fun OrderDetails(list: List<Dish>, navController: NavController, onNavigateToTru
             value = tip,
             onValueChange = { newText ->
                 tip = newText
+                //TODO Recalculate price
             },
             modifier = Modifier.width(40.dp),
             keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number)
@@ -154,10 +156,11 @@ fun OrderDetails(list: List<Dish>, navController: NavController, onNavigateToTru
             .padding(20.dp)){
         Text(text = "Total", fontWeight = FontWeight.Bold)
 
-        val s = tax+tip.text.toInt()+list.sumOf{it.price}
+        val s = tax+tip.text.toInt()+total
+        //TODO price to be recalculated
         val cf = NumberFormat.getCurrencyInstance(Locale("en","US"))
-        val sm = cf.format(s)
-        Text(text = sm)
+        val grandTotal = cf.format(s)
+        Text(text = grandTotal)
     }
     Button(onClick = {
         onNavigateToTruck()

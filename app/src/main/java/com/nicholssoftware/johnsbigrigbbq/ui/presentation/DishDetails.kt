@@ -40,7 +40,7 @@ fun DishDetailsScreen(navController: NavController, mainViewModel: MainViewModel
             DishDescription(dish)
             Button(onClick = {
                 //Add to cart
-                ServiceLocator.cart.add(dish)
+                ServiceLocator.AddToCart(dish)
                 //TODO mainViewModel.setTitle(NavigationItem.Checkout.title)
                 navController.navigate(NavigationItem.Checkout.route){
                     navController.graph.startDestinationRoute?.let { route ->
