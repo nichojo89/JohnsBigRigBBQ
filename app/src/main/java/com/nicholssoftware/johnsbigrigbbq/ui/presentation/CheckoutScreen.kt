@@ -39,17 +39,20 @@ fun CheckoutScreen(navController: NavController){
 fun OrderItems(navController: NavController, onNavigateToTruck: () -> Unit){
     Column(modifier = Modifier.fillMaxSize()){
         val list = ServiceLocator.cart.toList()
+        //TODO cleanup coce by vs = ???
         val grandTotal = remember {mutableStateOf("")}
+        var tip by remember { mutableStateOf(TextFieldValue("0")) }
+
         LazyColumn(modifier = Modifier.fillMaxHeight()
             .align(Alignment.CenterHorizontally),
             contentPadding = PaddingValues(16.dp)
         ){
             items(list) { item ->
-                OrderCard(order = item)
+                OrderCard(order = item, grandTotal, tip)
 
             }
             item {
-                OrderDetails(order = list, grandTotal) {onNavigateToTruck()}
+                OrderDetails(order = list, grandTotal, tip) {onNavigateToTruck()}
             }
         }
 
@@ -57,7 +60,7 @@ fun OrderItems(navController: NavController, onNavigateToTruck: () -> Unit){
 }
 
 @Composable
-fun OrderCard(order : Pair<Dish, Int>){
+fun OrderCard(order : Pair<Dish, Int>, bill: MutableState<String>, tip: TextFieldValue){
     val dish = order.first
     Card(
         modifier = Modifier
@@ -101,7 +104,11 @@ fun OrderCard(order : Pair<Dish, Int>){
                 modifier = Modifier.width(60.dp),
                 onValueChange = {
                         newText -> itemCount = newText
-                    //TODO recalculate price
+                    //Recalculate on qty change
+                    val cf = NumberFormat.getCurrencyInstance(Locale("en","US"))
+                    //TODO
+                    val s = tax+tip.text.toInt()+total
+                    bill.value = cf.format(s)
                 },
                 keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number)
             )
@@ -114,7 +121,7 @@ fun OrderCard(order : Pair<Dish, Int>){
 }
 
 @Composable
-fun OrderDetails(order: List<Pair<Dish, Int>>, grandTotal: MutableState<String>, onNavigateToTruck: () -> Unit){
+fun OrderDetails(order: List<Pair<Dish, Int>>, grandTotal: MutableState<String>, tip: TextFieldValue, onNavigateToTruck: () -> Unit){
     val total = order.sumOf { it.first.price * it.second }
     val tax = total * 0.06
     val cf = NumberFormat.getCurrencyInstance(Locale("en","US"))
@@ -131,7 +138,7 @@ fun OrderDetails(order: List<Pair<Dish, Int>>, grandTotal: MutableState<String>,
         Text(text = t)
     }
 
-    var tip by remember { mutableStateOf(TextFieldValue("0")) }
+
 
     Row(horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
