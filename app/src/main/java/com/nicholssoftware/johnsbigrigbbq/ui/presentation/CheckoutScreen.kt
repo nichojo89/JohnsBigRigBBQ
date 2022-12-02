@@ -41,7 +41,7 @@ fun OrderItems(navController: NavController, onNavigateToTruck: () -> Unit){
         val list = ServiceLocator.cart.toList()
         //TODO cleanup coce by vs = ???
         val grandTotal = remember {mutableStateOf("")}
-        var tip by remember { mutableStateOf(TextFieldValue("0")) }
+        val tip = remember { mutableStateOf(TextFieldValue("0")) }
 
         LazyColumn(modifier = Modifier.fillMaxHeight()
             .align(Alignment.CenterHorizontally),
@@ -60,7 +60,7 @@ fun OrderItems(navController: NavController, onNavigateToTruck: () -> Unit){
 }
 
 @Composable
-fun OrderCard(order : Pair<Dish, Int>, bill: MutableState<String>, tip: TextFieldValue){
+fun OrderCard(order : Pair<Dish, Int>, bill: MutableState<String>, tip: MutableState<TextFieldValue>){
     val dish = order.first
     Card(
         modifier = Modifier
@@ -105,10 +105,10 @@ fun OrderCard(order : Pair<Dish, Int>, bill: MutableState<String>, tip: TextFiel
                 onValueChange = {
                         newText -> itemCount = newText
                     //Recalculate on qty change
-                    val cf = NumberFormat.getCurrencyInstance(Locale("en","US"))
-                    //TODO
-                    val s = tax+tip.text.toInt()+total
-                    bill.value = cf.format(s)
+//                    val cf = NumberFormat.getCurrencyInstance(Locale("en","US"))
+//                    //TODO
+//                    val s = tax+tip.text.toInt()+total
+//                    bill.value = cf.format(s)
                 },
                 keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number)
             )
@@ -121,7 +121,7 @@ fun OrderCard(order : Pair<Dish, Int>, bill: MutableState<String>, tip: TextFiel
 }
 
 @Composable
-fun OrderDetails(order: List<Pair<Dish, Int>>, grandTotal: MutableState<String>, tip: TextFieldValue, onNavigateToTruck: () -> Unit){
+fun OrderDetails(order: List<Pair<Dish, Int>>, grandTotal: MutableState<String>, tip: MutableState<TextFieldValue>, onNavigateToTruck: () -> Unit){
     val total = order.sumOf { it.first.price * it.second }
     val tax = total * 0.06
     val cf = NumberFormat.getCurrencyInstance(Locale("en","US"))
@@ -147,16 +147,15 @@ fun OrderDetails(order: List<Pair<Dish, Int>>, grandTotal: MutableState<String>,
         Text(text = "Add tip", fontWeight = FontWeight.Bold)
 
 
-
         TextField(
-            value = tip,
+            value = tip.value,
             onValueChange = { newText ->
-                tip = newText
+                tip.value = TextFieldValue(newText.text)
                 //Recalculate price after adjusting tip
-                val s = tax+tip.text.toInt()+total
+                val s = tax+tip.value.text.toDouble()+total
                 grandTotal.value = cf.format(s)
             },
-            modifier = Modifier.width(40.dp),
+            modifier = Modifier.width(80.dp),
             keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number)
         )
 
@@ -170,7 +169,7 @@ fun OrderDetails(order: List<Pair<Dish, Int>>, grandTotal: MutableState<String>,
         Text(text = "Total", fontWeight = FontWeight.Bold)
 
         //Set initial bill
-        val s = tax+tip.text.toInt()+total
+        val s = tax+tip.value.text.toInt()+total
         grandTotal.value = cf.format(s)
         Text(text = grandTotal.value)
     }
