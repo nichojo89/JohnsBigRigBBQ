@@ -39,6 +39,7 @@ fun CheckoutScreen(navController: NavController){
 fun OrderItems(navController: NavController, onNavigateToTruck: () -> Unit){
     Column(modifier = Modifier.fillMaxSize()){
         val list = ServiceLocator.cart.toList()
+        val grandTotal = remember {mutableStateOf("")}
         LazyColumn(modifier = Modifier.fillMaxHeight()
             .align(Alignment.CenterHorizontally),
             contentPadding = PaddingValues(16.dp)
@@ -48,7 +49,7 @@ fun OrderItems(navController: NavController, onNavigateToTruck: () -> Unit){
 
             }
             item {
-                OrderDetails(order = list) {onNavigateToTruck()}
+                OrderDetails(order = list, grandTotal) {onNavigateToTruck()}
             }
         }
 
@@ -113,9 +114,11 @@ fun OrderCard(order : Pair<Dish, Int>){
 }
 
 @Composable
-fun OrderDetails(order: List<Pair<Dish, Int>>, onNavigateToTruck: () -> Unit){
+fun OrderDetails(order: List<Pair<Dish, Int>>, grandTotal: MutableState<String>, onNavigateToTruck: () -> Unit){
     val total = order.sumOf { it.first.price * it.second }
     val tax = total * 0.06
+    val cf = NumberFormat.getCurrencyInstance(Locale("en","US"))
+
     Row(horizontalArrangement = Arrangement.SpaceBetween,
     modifier = Modifier
         .fillMaxWidth()
@@ -124,6 +127,7 @@ fun OrderDetails(order: List<Pair<Dish, Int>>, onNavigateToTruck: () -> Unit){
 
         val cf = NumberFormat.getCurrencyInstance(Locale("en","US"))
         val t = cf.format(tax)
+
         Text(text = t)
     }
 
@@ -141,7 +145,9 @@ fun OrderDetails(order: List<Pair<Dish, Int>>, onNavigateToTruck: () -> Unit){
             value = tip,
             onValueChange = { newText ->
                 tip = newText
-                //TODO Recalculate price
+                //Recalculate price after adjusting tip
+                val s = tax+tip.text.toInt()+total
+                grandTotal.value = cf.format(s)
             },
             modifier = Modifier.width(40.dp),
             keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number)
@@ -156,11 +162,10 @@ fun OrderDetails(order: List<Pair<Dish, Int>>, onNavigateToTruck: () -> Unit){
             .padding(20.dp)){
         Text(text = "Total", fontWeight = FontWeight.Bold)
 
+        //Set initial bill
         val s = tax+tip.text.toInt()+total
-        //TODO price to be recalculated
-        val cf = NumberFormat.getCurrencyInstance(Locale("en","US"))
-        val grandTotal = cf.format(s)
-        Text(text = grandTotal)
+        grandTotal.value = cf.format(s)
+        Text(text = grandTotal.value)
     }
     Button(onClick = {
         onNavigateToTruck()

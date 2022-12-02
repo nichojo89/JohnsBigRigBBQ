@@ -12,4 +12,13 @@ object ServiceLocator {
         else
             _cart[dish] = 1
     }
+
+    fun UpdateCart(dish: Dish){
+        if(_cart.containsKey(dish)){
+            if(_cart[dish] == 1)
+                _cart.remove(dish)
+            else
+                _cart[dish] = _cart[dish]!!.plus(1)
+        }
+    }
 }
