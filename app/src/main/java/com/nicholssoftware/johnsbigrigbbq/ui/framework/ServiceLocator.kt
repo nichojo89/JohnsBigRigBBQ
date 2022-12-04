@@ -28,4 +28,6 @@ object ServiceLocator {
     fun GetTotal(tip: Double): String = cf.format(cart.toList().sumOf { it.first.price * it.second } + tip)
 
     fun GetTax(): String =  cf.format(cart.toList().sumOf { it.first.price * it.second } * 0.06)
+
+    fun GetItemTotal(order: Pair<Dish,Int>) = cf.format(order.first.price * order.second)
 }

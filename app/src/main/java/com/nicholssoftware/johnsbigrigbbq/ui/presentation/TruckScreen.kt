@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.*
 import com.nicholssoftware.johnsbigrigbbq.R
+import com.nicholssoftware.johnsbigrigbbq.ui.framework.ServiceLocator
 import com.nicholssoftware.johnsbigrigbbq.ui.theme.Red
 
 @Preview(showBackground = true)
@@ -46,13 +47,13 @@ fun TruckScreen(){
             val intent = Intent(Intent.ACTION_SEND)
             intent.putExtra(Intent.EXTRA_EMAIL, "bigjon@bigjonsBBQTruck.com")
             intent.putExtra(Intent.EXTRA_SUBJECT, "Food Order")
-            intent.putExtra(Intent.EXTRA_TEXT, "1 brisket: \$16.00\n" +
-                    "1 steak bite: \$12.00\n" +
-                    "1 smoked rib: \$18.00\n" +
-                    "1 smoked chicken: \$13.00\n" +
-                    "Tip: 12.00\n" +
-                    "Tax: \$10.00\n" +
-                    "Total: \$81.00")
+            val msg = java.lang.StringBuilder()
+            for(o in ServiceLocator.cart.toList()){
+                msg.append("${o.second} " +
+                        "${o.first.title}: " +
+                        "${ServiceLocator.GetItemTotal(o)}\n")
+            }
+            intent.putExtra(Intent.EXTRA_TEXT, msg.toString())
             intent.type = "message/rfc822"
 
             context.startActivity(Intent.createChooser(intent, "Select email"))
