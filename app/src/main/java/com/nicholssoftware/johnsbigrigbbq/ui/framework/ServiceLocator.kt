@@ -25,8 +25,7 @@ object ServiceLocator {
                 _cart[order.first] = order.second
         }
     }
-    fun GetTotal(tip: Double): String{
-        var f = cf.format(cart.toList().sumOf { it.first.price * it.second } + tip)
-        return f
-    }
+    fun GetTotal(tip: Double): String = cf.format(cart.toList().sumOf { it.first.price * it.second } + tip)
+
+    fun GetTax(): String =  cf.format(cart.toList().sumOf { it.first.price * it.second } * 0.06)
 }

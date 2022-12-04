@@ -41,7 +41,7 @@ fun OrderItems(navController: NavController, onNavigateToTruck: () -> Unit){
         val list = ServiceLocator.cart.toList()
         val grandTotal = remember {mutableStateOf("")}
         val tip = remember { mutableStateOf(TextFieldValue("0")) }
-        val tax = remember { mutableStateOf(0.0) }
+        val tax = remember { mutableStateOf(ServiceLocator.GetTax()) }
 
         LazyColumn(modifier = Modifier.fillMaxHeight()
             .align(Alignment.CenterHorizontally),
@@ -49,7 +49,6 @@ fun OrderItems(navController: NavController, onNavigateToTruck: () -> Unit){
         ){
             items(list) { item ->
                 OrderCard(order = item, grandTotal, tip, tax)
-
             }
             item {
                 OrderDetails(order = list, grandTotal, tip, tax) {onNavigateToTruck()}
@@ -60,7 +59,7 @@ fun OrderItems(navController: NavController, onNavigateToTruck: () -> Unit){
 }
 
 @Composable
-fun OrderCard(order : Pair<Dish, Int>, grandTotal: MutableState<String>, tip: MutableState<TextFieldValue>, tax: MutableState<Double>){
+fun OrderCard(order : Pair<Dish, Int>, grandTotal: MutableState<String>, tip: MutableState<TextFieldValue>, tax: MutableState<String>){
     val dish = order.first
     Card(
         modifier = Modifier
@@ -107,8 +106,8 @@ fun OrderCard(order : Pair<Dish, Int>, grandTotal: MutableState<String>, tip: Mu
                     //TODO update cart
                     ServiceLocator.UpdateCart(Pair(dish,g))
                     //Recalculate on qty change
-                    val dg = ServiceLocator.GetTotal(tip.value.text.toDouble())
-                    grandTotal.value = dg
+                    grandTotal.value = ServiceLocator.GetTotal(tip.value.text.toDouble())
+                    tax.value = ServiceLocator.GetTax()
                 },
                 keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number)
             )
@@ -121,18 +120,13 @@ fun OrderCard(order : Pair<Dish, Int>, grandTotal: MutableState<String>, tip: Mu
 }
 
 @Composable
-fun OrderDetails(order: List<Pair<Dish, Int>>, grandTotal: MutableState<String>, tip: MutableState<TextFieldValue>, tax: MutableState<Double>, onNavigateToTruck: () -> Unit){
-    val total = order.sumOf { it.first.price * it.second }
-    val cf = NumberFormat.getCurrencyInstance(Locale("en","US"))
-    tax.value = total * 0.06
+fun OrderDetails(order: List<Pair<Dish, Int>>, grandTotal: MutableState<String>, tip: MutableState<TextFieldValue>, tax: MutableState<String>, onNavigateToTruck: () -> Unit){
     Row(horizontalArrangement = Arrangement.SpaceBetween,
     modifier = Modifier
         .fillMaxWidth()
         .padding(20.dp)){
         Text(text = "Tax", fontWeight = FontWeight.Bold)
-        val t = cf.format(tax.value)
-
-        Text(text = t)
+        Text(text = tax.value)
     }
 
     Row(horizontalArrangement = Arrangement.SpaceBetween,
@@ -146,8 +140,8 @@ fun OrderDetails(order: List<Pair<Dish, Int>>, grandTotal: MutableState<String>,
             onValueChange = { newText ->
                 tip.value = TextFieldValue(newText.text)
                 //Recalculate price after adjusting tip
-                val s = tax.value+tip.value.text.toDouble()+total
-                grandTotal.value = cf.format(s)
+                grandTotal.value = ServiceLocator.GetTotal(tip.value.text.toDouble())
+                tax.value = ServiceLocator.GetTax()
             },
             modifier = Modifier.width(80.dp),
             keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number)
@@ -161,8 +155,8 @@ fun OrderDetails(order: List<Pair<Dish, Int>>, grandTotal: MutableState<String>,
         Text(text = "Total", fontWeight = FontWeight.Bold)
 
         //Set initial bill
-        val dg = ServiceLocator.GetTotal(tip.value.text.toDouble())
-        grandTotal.value = dg
+        grandTotal.value = ServiceLocator.GetTotal(tip.value.text.toDouble())
+        tax.value = ServiceLocator.GetTax()
         Text(text = grandTotal.value)
     }
     Button(onClick = {
