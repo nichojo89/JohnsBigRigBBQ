@@ -17,15 +17,20 @@ object ServiceLocator {
             _cart[dish] = 1
     }
 
-    fun UpdateCart(order: Pair<Dish,Int>){
-        if(_cart.containsKey(order.first)){
-            if(order.second == 0)
-                _cart.remove(order.first)
-            else
-                _cart[order.first] = order.second
-        }
+    fun RemoveFromCart(order: Pair<Dish,Int>) {
+        if(_cart.containsKey(order.first))
+            _cart.remove(order.first)
     }
-    fun GetTotal(tip: Double): String = cf.format(cart.toList().sumOf { it.first.price * it.second } + tip)
+
+    fun UpdateCart(order: Pair<Dish,Int>){
+        if(_cart.containsKey(order.first))
+            if(order.second >= 0)
+                _cart[order.first] = order.second
+    }
+
+    fun GetTotal(tip: Double): String = cf.format(
+        cart.toList()
+            .sumOf { it.first.price * it.second } + tip)
 
     fun GetTax(): String =  cf.format(cart.toList().sumOf { it.first.price * it.second } * 0.06)
 
